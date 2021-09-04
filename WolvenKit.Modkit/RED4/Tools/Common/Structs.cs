@@ -1,7 +1,6 @@
 using System;
 using System.Numerics;
 using System.Collections.Generic;
-using WolvenKit.Modkit.RED4.Materials;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 
