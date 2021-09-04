@@ -377,7 +377,16 @@ namespace WolvenKit.Modkit.RED4
             else
             {
                 var infile = rawRelative.FullName;
-                buffer = File.ReadAllBytes(infile);
+
+                using (var fs = new FileStream(infile, FileMode.Open))
+                using (var ms = new MemoryStream())
+                {
+                    fs.Seek(148, SeekOrigin.Begin);
+                    fs.CopyTo(ms);
+                    buffer = ms.ToArray();
+                }
+
+                //buffer = File.ReadAllBytes(infile).Skip(148).ToArray();
             }
 
             if (args.Keep)
@@ -532,7 +541,7 @@ namespace WolvenKit.Modkit.RED4
                     switch (args.importFormat)
                     {
                         case GltfImportAsFormat.Mesh:
-                            result = ImportMesh(rawRelative.ToFileInfo(), redFs, args.validationMode, args.importMaterialOnly);
+                            result = ImportMesh(rawRelative.ToFileInfo(), redFs, args.Archives, args.validationMode, args.importMaterialOnly);
                             break;
                         case GltfImportAsFormat.Morphtarget:
                             result = ImportTargetBaseMesh(rawRelative.ToFileInfo(), redFs, args.Archives, outDir.FullName, args.validationMode);
